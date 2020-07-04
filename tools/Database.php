@@ -24,13 +24,13 @@ class Database
             $conn->exec("set names utf8");
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return array(
-                "success" => true,
-                "db" => $conn,
+                "isQuery" => true,
+                "result" => $conn,
             );
         } catch (PDOException $e) {
             return array(
-                "success" => false,
-                "message" => $e->getMessage(),
+                "isQuery" => false,
+                "result" => $e->getMessage(),
             );
         }
     }
@@ -38,27 +38,33 @@ class Database
     public function query($sql_command)
     {
         $db = $this->connect();
-        if ($db['success']) {
+        if ($db['isQuery']) {
             try {
-                $conn = $db['db'];
+                $conn = $db['result'];
                 $stmt = $conn->prepare($sql_command);
                 $result = $stmt->execute();
                 $db = null;
                 try {
                     $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
                     return array(
+                        "isQuery" => true,
                         "result" => $stmt->fetchAll(),
                         "rowCount" => $stmt->rowCount(),
                         "colCount" => $stmt->columnCount(),
                     );
                 } catch (PDOException $e) {
                     return array(
+                        "isQuery" => true,
                         "result" => $result,
                         "rowCount" => $stmt->rowCount(),
+                        "colCount" => $stmt->columnCount(),
                     );
                 }
             } catch (PDOException $e) {
-                return $e->getMessage();
+                return array(
+                    "isQuery" => false,
+                    "result" => $e->getMessage(),
+                );
             }
         } else {
             return $db;
