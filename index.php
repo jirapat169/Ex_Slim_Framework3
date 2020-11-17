@@ -13,10 +13,6 @@ $app->add(function ($req, $res, $next) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST');
 });
 
-$checkProxyHeaders = true;
-$trustedProxies = ['10.0.0.1', '10.0.0.2'];
-$app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies));
-
 // Router
 require './config/router.php';
 

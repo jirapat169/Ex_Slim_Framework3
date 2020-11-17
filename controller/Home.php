@@ -8,8 +8,7 @@ class Home
 {
     public function index(Request $request, Response $response, $args)
     {
-        $ipAddress = $request->getAttribute('ip_address');
-        $response->getBody()->write(\json_encode($ipAddress));
+        $response->getBody()->write(\json_encode("Welcome to Slim Framework 3"));
         return $response;
     }
 }
